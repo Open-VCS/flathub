@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>app.openvcs.OpenVCS</id>
+  <name>OpenVCS</name>
+  <summary>A plugin-based desktop version control client.</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <developer id="app.openvcs">
+    <name>Jordon Brooks</name>
+  </developer>
+  <url type="homepage">https://openvcs.app</url>
+  <url type="bugtracker">https://github.com/Open-VCS/OpenVCS/issues</url>
+  <description>
+    <p>OpenVCS is a plugin-based desktop version control client. Built with Rust and Tauri for a native experience, it provides a clean interface for Git today while laying the groundwork for broader VCS support through its plugin architecture.</p>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/Open-VCS/OpenVCS/openvcs-v0.4.0/Client/docs/images/Main-UI-Preview.png</image>
+      <caption>Main interface</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/Open-VCS/OpenVCS/openvcs-v0.4.0/Client/docs/images/Settings-UI-Preview.png</image>
+      <caption>Settings</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/Open-VCS/OpenVCS/openvcs-v0.4.0/Client/docs/images/ShowHistory.png</image>
+      <caption>Commit history</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/Open-VCS/OpenVCS/openvcs-v0.4.0/Client/docs/images/LightModeTheme.png</image>
+      <caption>Light theme</caption>
+    </screenshot>
+  </screenshots>
+  <launchable type="desktop-id">app.openvcs.OpenVCS.desktop</launchable>
+  <provides>
+    <binary>openvcs</binary>
+  </provides>
+  <releases>
+    <release version="0.4.0" date="2026-05-12">
+      <description>
+        <p>Initial Flatpak release.</p>
+      </description>
+    </release>
+  </releases>
+</component>
