@@ -6,14 +6,16 @@ sdk-extensions:
   - org.freedesktop.Sdk.Extension.rust-stable
   - org.freedesktop.Sdk.Extension.node24
 
-command: openvcs
+command: openvcs-wrapper
 
 finish-args:
   - --share=ipc
   - --share=network
   - --socket=wayland
   - --socket=fallback-x11
+  - --socket=ssh-auth
   - --device=dri
+  - --filesystem=host
   - --talk-name=org.freedesktop.portal.Desktop
   - --talk-name=org.freedesktop.portal.FileChooser
   - --talk-name=org.freedesktop.portal.OpenURI
@@ -53,6 +55,9 @@ modules:
       - mkdir -p /app/share/openvcs/plugins/openvcs.git
       - cp -a bin/. /app/share/openvcs/plugins/openvcs.git/bin/
       - cp package.json /app/share/openvcs/plugins/openvcs.git/
+      # Bundle runtime dependencies, stripping .bin symlinks (plugin sync rejects symlinks)
+      - cp -a node_modules /app/share/openvcs/plugins/openvcs.git/node_modules
+      - find /app/share/openvcs/plugins/openvcs.git/node_modules -type d -name ".bin" -exec rm -rf {} + 2>/dev/null || true
       - for f in src tsconfig.json README.md ARCHITECTURE.md icon.png LICENSE; do
           file="$f";
           if [ -e "$file" ]; then
@@ -121,6 +126,13 @@ modules:
       - cargo build --release --offline --features tauri/custom-protocol --manifest-path Backend/Cargo.toml
       # Install binary
       - install -Dm755 target/release/openvcs /app/bin/openvcs
+      # Wrapper script ensures a valid CWD (git requires it; Flatpak sandbox may have none)
+      - |
+        cat > /app/bin/openvcs-wrapper <<'WRAPPER'
+        #!/bin/sh
+        cd "${HOME}" && exec /app/bin/openvcs "$@"
+        WRAPPER
+      - chmod +x /app/bin/openvcs-wrapper
       # Stage pre-built plugins from previous modules
       - install -d /app/bin/built-in-plugins/openvcs.git
       - install -d /app/bin/built-in-plugins/openvcs.official-themes
@@ -129,9 +141,29 @@ modules:
       # Write source metadata for each plugin
       - echo '{"managed_by":"built-in","kind":"path","spec":"../Git"}' > /app/bin/built-in-plugins/openvcs.git/source.json
       - echo '{"managed_by":"built-in","kind":"path","spec":"../OfficialThemes"}' > /app/bin/built-in-plugins/openvcs.official-themes/source.json
-      # Bundle node runtime (copy from SDK extension)
+      # Bundle node + npm from SDK extension (npm in PATH for plugin runtime)
       - install -d /app/bin/node-runtime
       - install -Dm755 /usr/lib/sdk/node24/bin/node /app/bin/node-runtime/node
+      - ln -s /app/bin/node-runtime/node /app/bin/node
+      # npm wrapper (SDK binary has hardcoded relative paths; use shell wrapper instead)
+      - |
+        cat > /app/bin/npm <<'WRAPPER'
+        #!/bin/sh
+        exec /app/bin/node /app/lib/node_modules/npm/bin/npm-cli.js "$@"
+        WRAPPER
+      - chmod +x /app/bin/npm
+      - |
+        cat > /app/bin/npx <<'WRAPPER'
+        #!/bin/sh
+        exec /app/bin/node /app/lib/node_modules/npm/bin/npx-cli.js "$@"
+        WRAPPER
+      - chmod +x /app/bin/npx
+      - install -d /app/lib/node_modules
+      - cp -a /usr/lib/sdk/node24/lib/node_modules/npm /app/lib/node_modules/npm
+      # Bundle git CLI from SDK (SDK has it; runtime doesn't)
+      - install -Dm755 /usr/bin/git /app/bin/git
+      - install -d /app/libexec
+      - cp -a /usr/libexec/git-core /app/libexec/git-core
       # Desktop integration (files from Flathub repo, type:file copies to build dir root)
       - install -Dm644 app.openvcs.OpenVCS.desktop /app/share/applications/app.openvcs.OpenVCS.desktop
       - install -Dm644 app.openvcs.OpenVCS.metainfo.xml /app/share/metainfo/app.openvcs.OpenVCS.metainfo.xml
