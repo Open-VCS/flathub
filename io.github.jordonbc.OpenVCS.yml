@@ -1,0 +1,141 @@
+app-id: io.github.jordonbc.OpenVCS
+runtime: org.gnome.Platform
+runtime-version: "49"
+sdk: org.gnome.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+  - org.freedesktop.Sdk.Extension.node24
+
+command: openvcs
+
+finish-args:
+  - --share=ipc
+  - --share=network
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --device=dri
+  - --talk-name=org.freedesktop.portal.Desktop
+  - --talk-name=org.freedesktop.portal.FileChooser
+  - --talk-name=org.freedesktop.portal.OpenURI
+
+modules:
+  - name: openvcs-frontend
+    buildsystem: simple
+    build-options:
+      append-path: /usr/lib/sdk/node24/bin
+    sources:
+      - type: git
+        url: https://github.com/Open-VCS/OpenVCS.git
+        tag: openvcs-v0.4.0
+        commit: 0c6585892826c80aeaf816e2f2ae5b95d541a1aa
+        dest: .
+      - npm-sources-frontend.json
+    build-commands:
+      - cd Frontend && npm_config_cache=../flatpak-node/npm-cache npm ci --offline
+      - cd Frontend && npm_config_cache=../flatpak-node/npm-cache npm run build
+      - mkdir -p /app/share/openvcs/frontend
+      - cp -a Frontend/dist/. /app/share/openvcs/frontend/
+
+  - name: openvcs-git-plugin
+    buildsystem: simple
+    build-options:
+      append-path: /usr/lib/sdk/node24/bin
+    sources:
+      - type: git
+        url: https://github.com/Open-VCS/OpenVCS-Plugin-Git.git
+        tag: openvcs-git-v0.3.0
+        commit: 48d769d0359b8a2867bdebb2b292593d7dbd8de8
+        dest: .
+      - npm-sources-git-plugin.json
+    build-commands:
+      - npm_config_cache=$PWD/flatpak-node/npm-cache npm ci --offline
+      - npm_config_cache=$PWD/flatpak-node/npm-cache npm run build
+      - mkdir -p /app/share/openvcs/plugins/openvcs.git
+      - cp -a bin/. /app/share/openvcs/plugins/openvcs.git/bin/
+      - cp package.json /app/share/openvcs/plugins/openvcs.git/
+      - for f in src tsconfig.json README.md ARCHITECTURE.md icon.png LICENSE; do
+          file="$f";
+          if [ -e "$file" ]; then
+            mkdir -p /app/share/openvcs/plugins/openvcs.git/"$(dirname "$f")";
+            cp -a "$file" /app/share/openvcs/plugins/openvcs.git/"$f";
+          fi;
+        done
+
+  - name: openvcs-official-themes
+    buildsystem: simple
+    sources:
+      - type: git
+        url: https://github.com/Open-VCS/OpenVCS-Plugin-Themes.git
+        tag: openvcs-official-themes-nightly
+        commit: 7704db42ed3729557f6b8fe5f1a967ea19e526b4
+        dest: .
+    build-commands:
+      - mkdir -p /app/share/openvcs/plugins/openvcs.official-themes
+      - cp -a themes/. /app/share/openvcs/plugins/openvcs.official-themes/themes/
+      - cp package.json /app/share/openvcs/plugins/openvcs.official-themes/
+      - cp README.md /app/share/openvcs/plugins/openvcs.official-themes/ 2>/dev/null || true
+      - cp LICENSE /app/share/openvcs/plugins/openvcs.official-themes/ 2>/dev/null || true
+      - cp icon.png /app/share/openvcs/plugins/openvcs.official-themes/ 2>/dev/null || true
+
+  - name: openvcs-backend
+    buildsystem: simple
+    build-options:
+      append-path: /usr/lib/sdk/rust-stable/bin
+      env:
+        OPENVCS_FLATPAK: "1"
+    sources:
+      - type: git
+        url: https://github.com/Open-VCS/OpenVCS.git
+        tag: openvcs-v0.4.0
+        commit: 0c6585892826c80aeaf816e2f2ae5b95d541a1aa
+        dest: .
+      - cargo-sources.json
+      - type: file
+        path: io.github.jordonbc.OpenVCS.desktop
+      - type: file
+        path: io.github.jordonbc.OpenVCS.metainfo.xml
+      - type: file
+        path: icons/32x32.png
+      - type: file
+        path: icons/64x64.png
+      - type: file
+        path: icons/128x128.png
+      - type: file
+        path: icons/128x128@2x.png
+    build-commands:
+      # Setup cargo vendored sources config (vendor dir lives at cargo/vendor in build root,
+      # workspace root is repo root so config goes in .cargo/)
+      - mkdir -p .cargo
+      - |
+        cat > .cargo/config.toml <<'CARGOEOF'
+        [source.crates-io]
+        replace-with = "vendored-sources"
+
+        [source.vendored-sources]
+        directory = "cargo/vendor"
+        CARGOEOF
+      # Tauri build-time macro needs frontend dist present in repo layout.
+      - mkdir -p Frontend/dist
+      - cp -a /app/share/openvcs/frontend/. Frontend/dist/
+      # Build Rust backend offline
+      - cargo build --release --offline --features tauri/custom-protocol --manifest-path Backend/Cargo.toml
+      # Install binary
+      - install -Dm755 target/release/openvcs /app/bin/openvcs
+      # Stage pre-built plugins from previous modules
+      - install -d /app/bin/built-in-plugins/openvcs.git
+      - install -d /app/bin/built-in-plugins/openvcs.official-themes
+      - cp -a /app/share/openvcs/plugins/openvcs.git/. /app/bin/built-in-plugins/openvcs.git/
+      - cp -a /app/share/openvcs/plugins/openvcs.official-themes/. /app/bin/built-in-plugins/openvcs.official-themes/
+      # Write source metadata for each plugin
+      - echo '{"managed_by":"built-in","kind":"path","spec":"../Git"}' > /app/bin/built-in-plugins/openvcs.git/source.json
+      - echo '{"managed_by":"built-in","kind":"path","spec":"../OfficialThemes"}' > /app/bin/built-in-plugins/openvcs.official-themes/source.json
+      # Bundle node runtime (copy from SDK extension)
+      - install -d /app/bin/node-runtime
+      - install -Dm755 /usr/lib/sdk/node24/bin/node /app/bin/node-runtime/node
+      # Desktop integration (files from Flathub repo, type:file copies to build dir root)
+      - install -Dm644 io.github.jordonbc.OpenVCS.desktop /app/share/applications/io.github.jordonbc.OpenVCS.desktop
+      - install -Dm644 io.github.jordonbc.OpenVCS.metainfo.xml /app/share/metainfo/io.github.jordonbc.OpenVCS.metainfo.xml
+      - install -Dm644 32x32.png /app/share/icons/hicolor/32x32/apps/io.github.jordonbc.OpenVCS.png
+      - install -Dm644 64x64.png /app/share/icons/hicolor/64x64/apps/io.github.jordonbc.OpenVCS.png
+      - install -Dm644 128x128.png /app/share/icons/hicolor/128x128/apps/io.github.jordonbc.OpenVCS.png
+      - install -Dm644 128x128@2x.png /app/share/icons/hicolor/256x256/apps/io.github.jordonbc.OpenVCS.png
