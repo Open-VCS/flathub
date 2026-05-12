@@ -6,7 +6,7 @@ sdk-extensions:
   - org.freedesktop.Sdk.Extension.rust-stable
   - org.freedesktop.Sdk.Extension.node24
 
-command: openvcs-wrapper
+command: openvcs
 
 finish-args:
   - --share=ipc
@@ -126,13 +126,6 @@ modules:
       - cargo build --release --offline --features tauri/custom-protocol --manifest-path Backend/Cargo.toml
       # Install binary
       - install -Dm755 target/release/openvcs /app/bin/openvcs
-      # Wrapper script ensures a valid CWD (git requires it; Flatpak sandbox may have none)
-      - |
-        cat > /app/bin/openvcs-wrapper <<'WRAPPER'
-        #!/bin/sh
-        cd "${HOME}" && exec /app/bin/openvcs "$@"
-        WRAPPER
-      - chmod +x /app/bin/openvcs-wrapper
       # Stage pre-built plugins from previous modules
       - install -d /app/bin/built-in-plugins/openvcs.git
       - install -d /app/bin/built-in-plugins/openvcs.official-themes
