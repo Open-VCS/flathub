@@ -364,6 +364,69 @@
         "dest": "flatpak-node"
     },
     {
+        "type": "file",
+        "url": "https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.27.7.tgz",
+        "sha512": "873ce79800cfb7e3a6b18cf0d44137ddc700f873dd22a88246aedc41e2f5265ab681bd7e3b258190c0ab606049facc55cef7b664911579e3db2ccda2108652c4",
+        "dest-filename": "e79800cfb7e3a6b18cf0d44137ddc700f873dd22a88246aedc41e2f5265ab681bd7e3b258190c0ab606049facc55cef7b664911579e3db2ccda2108652c4",
+        "dest": "flatpak-node/npm-cache/_cacache/content-v2/sha512/87/3c"
+    },
+    {
+        "type": "file",
+        "url": "https://registry.npmjs.org/@openvcs/sdk/-/sdk-0.4.0-edge.20260511.62.tgz",
+        "sha512": "6d557e9f8cb1113fe50a3aff0e39167a50b6cbb87a0fad26153828be92ad539b67fad436839c2a3765631d2b816265084799486d146f3f2384ffa15d05a517e8",
+        "dest-filename": "7e9f8cb1113fe50a3aff0e39167a50b6cbb87a0fad26153828be92ad539b67fad436839c2a3765631d2b816265084799486d146f3f2384ffa15d05a517e8",
+        "dest": "flatpak-node/npm-cache/_cacache/content-v2/sha512/6d/55"
+    },
+    {
+        "type": "file",
+        "url": "https://registry.npmjs.org/@types/node/-/node-25.6.2.tgz",
+        "sha512": "b2892e4f6f1dc5ff494f929a772d5fb173af2381d5a6365af7934a4f9cbd3cd4c8aecd80b286d1e0614003dd191bc33e9f15512f2b025ec563e9e182ed56eb97",
+        "dest-filename": "2e4f6f1dc5ff494f929a772d5fb173af2381d5a6365af7934a4f9cbd3cd4c8aecd80b286d1e0614003dd191bc33e9f15512f2b025ec563e9e182ed56eb97",
+        "dest": "flatpak-node/npm-cache/_cacache/content-v2/sha512/b2/89"
+    },
+    {
+        "type": "file",
+        "url": "https://registry.npmjs.org/esbuild/-/esbuild-0.27.7.tgz",
+        "sha512": "231a626d38f25679ab210a396aa3690a0a00080fdd4ca2d39613078a154785d9312b23ced6e041b61ba64f4add1e672c93db8ca272164b49b81658d6cc82e1df",
+        "dest-filename": "626d38f25679ab210a396aa3690a0a00080fdd4ca2d39613078a154785d9312b23ced6e041b61ba64f4add1e672c93db8ca272164b49b81658d6cc82e1df",
+        "dest": "flatpak-node/npm-cache/_cacache/content-v2/sha512/23/1a"
+    },
+    {
+        "type": "file",
+        "url": "https://registry.npmjs.org/get-tsconfig/-/get-tsconfig-4.14.0.tgz",
+        "sha512": "c936fef035f30d113382f62687ab3dbc7b125421de0b41b73c8e5b1173411ed9ac84f9cef92e4eeea80b10e9f423942f332ea4a5937c2b534a1b28a52dbf77c0",
+        "dest-filename": "fef035f30d113382f62687ab3dbc7b125421de0b41b73c8e5b1173411ed9ac84f9cef92e4eeea80b10e9f423942f332ea4a5937c2b534a1b28a52dbf77c0",
+        "dest": "flatpak-node/npm-cache/_cacache/content-v2/sha512/c9/36"
+    },
+    {
+        "type": "file",
+        "url": "https://registry.npmjs.org/resolve-pkg-maps/-/resolve-pkg-maps-1.0.0.tgz",
+        "sha512": "b1e4b64e3dba4c154e0b6348736ace7b6cb664eede7f1213b4b65c1923a71c734e43b0a489405fc34230d9c93ac642213f02e128d2d2f013be844a6781096acf",
+        "dest-filename": "b64e3dba4c154e0b6348736ace7b6cb664eede7f1213b4b65c1923a71c734e43b0a489405fc34230d9c93ac642213f02e128d2d2f013be844a6781096acf",
+        "dest": "flatpak-node/npm-cache/_cacache/content-v2/sha512/b1/e4"
+    },
+    {
+        "type": "file",
+        "url": "https://registry.npmjs.org/tsx/-/tsx-4.21.0.tgz",
+        "sha512": "e42d6c838512b3595f1b41856f644b5ec7695ea05212101a03fd243cbd35c31ce932a2c82cdc48c4838a8882f3f9c760fe92e7394c4560e479ca11d4ebaeb06f",
+        "dest-filename": "6c838512b3595f1b41856f644b5ec7695ea05212101a03fd243cbd35c31ce932a2c82cdc48c4838a8882f3f9c760fe92e7394c4560e479ca11d4ebaeb06f",
+        "dest": "flatpak-node/npm-cache/_cacache/content-v2/sha512/e4/2d"
+    },
+    {
+        "type": "file",
+        "url": "https://registry.npmjs.org/typescript/-/typescript-6.0.3.tgz",
+        "sha512": "cb64efbb14993c3c906a490544f6472859be28a56a222b1d83dfc26709bd7edbca5cb3fc3515a3dfcfce0e335baf8dd2b285ea36e022b047f519d0b1a9671d07",
+        "dest-filename": "efbb14993c3c906a490544f6472859be28a56a222b1d83dfc26709bd7edbca5cb3fc3515a3dfcfce0e335baf8dd2b285ea36e022b047f519d0b1a9671d07",
+        "dest": "flatpak-node/npm-cache/_cacache/content-v2/sha512/cb/64"
+    },
+    {
+        "type": "file",
+        "url": "https://registry.npmjs.org/undici-types/-/undici-types-7.19.2.tgz",
+        "sha512": "a985675793849b6016f1c24c0a9755db4083c9a3778340230e53867f5396e22683131f0cc1db42854a78ceee07d153f79c3445ffc44a587f883e9f6e5b460666",
+        "dest-filename": "675793849b6016f1c24c0a9755db4083c9a3778340230e53867f5396e22683131f0cc1db42854a78ceee07d153f79c3445ffc44a587f883e9f6e5b460666",
+        "dest": "flatpak-node/npm-cache/_cacache/content-v2/sha512/a9/85"
+    },
+    {
         "type": "shell",
         "commands": [
             "FLATPAK_BUILDER_BUILDDIR=$PWD flatpak-node/patch-all.sh",
