@@ -18,19 +18,17 @@ finish-args:
   - --talk-name=org.freedesktop.portal.FileChooser
   - --talk-name=org.freedesktop.portal.OpenURI
 
-sources:
-  - type: git
-    url: https://github.com/Open-VCS/OpenVCS.git
-    tag: v0.4.0
-    commit: 0c6585892826c80aeaf816e2f2ae5b95d541a1aa
-    dest: .
-
 modules:
   - name: openvcs-frontend
     buildsystem: simple
     build-options:
       append-path: /usr/lib/sdk/node24/bin
     sources:
+      - type: git
+        url: https://github.com/Open-VCS/OpenVCS.git
+        tag: v0.4.0
+        commit: 0c6585892826c80aeaf816e2f2ae5b95d541a1aa
+        dest: .
       - npm-sources-frontend.json
     build-commands:
       - cd Client/Frontend && npm ci --offline
@@ -43,6 +41,11 @@ modules:
     build-options:
       append-path: /usr/lib/sdk/node24/bin
     sources:
+      - type: git
+        url: https://github.com/Open-VCS/OpenVCS.git
+        tag: v0.4.0
+        commit: 0c6585892826c80aeaf816e2f2ae5b95d541a1aa
+        dest: .
       - npm-sources-git-plugin.json
     build-commands:
       - cd Git && npm ci --offline
@@ -60,6 +63,12 @@ modules:
 
   - name: openvcs-official-themes
     buildsystem: simple
+    sources:
+      - type: git
+        url: https://github.com/Open-VCS/OpenVCS.git
+        tag: v0.4.0
+        commit: 0c6585892826c80aeaf816e2f2ae5b95d541a1aa
+        dest: .
     build-commands:
       - mkdir -p /app/share/openvcs/plugins/openvcs.official-themes
       - cp -a OfficialThemes/themes/. /app/share/openvcs/plugins/openvcs.official-themes/themes/
@@ -75,6 +84,11 @@ modules:
       env:
         OPENVCS_FLATPAK: "1"
     sources:
+      - type: git
+        url: https://github.com/Open-VCS/OpenVCS.git
+        tag: v0.4.0
+        commit: 0c6585892826c80aeaf816e2f2ae5b95d541a1aa
+        dest: .
       - cargo-sources.json
       - type: file
         path: io.github.jordonbc.OpenVCS.desktop
