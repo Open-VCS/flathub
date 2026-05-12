@@ -31,10 +31,10 @@ modules:
         dest: .
       - npm-sources-frontend.json
     build-commands:
-      - cd Client/Frontend && npm ci --offline
-      - cd Client/Frontend && npm run build
+      - cd Frontend && npm ci --offline
+      - cd Frontend && npm run build
       - mkdir -p /app/share/openvcs/frontend
-      - cp -a Client/Frontend/dist/. /app/share/openvcs/frontend/
+      - cp -a Frontend/dist/. /app/share/openvcs/frontend/
 
   - name: openvcs-git-plugin
     buildsystem: simple
@@ -104,10 +104,10 @@ modules:
         path: icons/128x128@2x.png
     build-commands:
       # Setup cargo vendored sources config (vendor dir lives at cargo/vendor in build root,
-      # workspace root is Client/ so config path is relative from there)
-      - mkdir -p Client/.cargo
+      # workspace root is repo root so config goes in .cargo/)
+      - mkdir -p .cargo
       - |
-        cat > Client/.cargo/config.toml <<'CARGOEOF'
+        cat > .cargo/config.toml <<'CARGOEOF'
         [source.crates-io]
         replace-with = "vendored-sources"
 
@@ -115,9 +115,9 @@ modules:
         directory = "../cargo/vendor"
         CARGOEOF
       # Build Rust backend offline
-      - cd Client && cargo build --release --offline --features tauri/custom-protocol --manifest-path Backend/Cargo.toml
+      - cargo build --release --offline --features tauri/custom-protocol --manifest-path Backend/Cargo.toml
       # Install binary
-      - install -Dm755 Client/target/release/openvcs /app/bin/openvcs
+      - install -Dm755 target/release/openvcs /app/bin/openvcs
       # Stage pre-built plugins from previous modules
       - install -d /app/bin/built-in-plugins/openvcs.git
       - install -d /app/bin/built-in-plugins/openvcs.official-themes
