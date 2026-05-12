@@ -31,8 +31,8 @@ modules:
         dest: .
       - npm-sources-frontend.json
     build-commands:
-      - cd Frontend && npm ci --offline
-      - cd Frontend && npm run build
+      - cd Frontend && npm_config_cache=../flatpak-node/npm-cache npm ci --offline
+      - cd Frontend && npm_config_cache=../flatpak-node/npm-cache npm run build
       - mkdir -p /app/share/openvcs/frontend
       - cp -a Frontend/dist/. /app/share/openvcs/frontend/
 
@@ -42,19 +42,19 @@ modules:
       append-path: /usr/lib/sdk/node24/bin
     sources:
       - type: git
-        url: https://github.com/Open-VCS/OpenVCS.git
-        tag: openvcs-v0.4.0
-        commit: 0c6585892826c80aeaf816e2f2ae5b95d541a1aa
+        url: https://github.com/Open-VCS/OpenVCS-Plugin-Git.git
+        tag: openvcs-git-v0.3.0
+        commit: 48d769d0359b8a2867bdebb2b292593d7dbd8de8
         dest: .
       - npm-sources-git-plugin.json
     build-commands:
-      - cd Git && npm ci --offline
-      - cd Git && npm run build
+      - npm_config_cache=$PWD/flatpak-node/npm-cache npm ci --offline
+      - npm_config_cache=$PWD/flatpak-node/npm-cache npm run build
       - mkdir -p /app/share/openvcs/plugins/openvcs.git
-      - cp -a Git/bin/. /app/share/openvcs/plugins/openvcs.git/bin/
-      - cp Git/package.json /app/share/openvcs/plugins/openvcs.git/
+      - cp -a bin/. /app/share/openvcs/plugins/openvcs.git/bin/
+      - cp package.json /app/share/openvcs/plugins/openvcs.git/
       - for f in src tsconfig.json README.md ARCHITECTURE.md icon.png LICENSE; do
-          file="Git/$f";
+          file="$f";
           if [ -e "$file" ]; then
             mkdir -p /app/share/openvcs/plugins/openvcs.git/"$(dirname "$f")";
             cp -a "$file" /app/share/openvcs/plugins/openvcs.git/"$f";
@@ -65,17 +65,17 @@ modules:
     buildsystem: simple
     sources:
       - type: git
-        url: https://github.com/Open-VCS/OpenVCS.git
-        tag: openvcs-v0.4.0
-        commit: 0c6585892826c80aeaf816e2f2ae5b95d541a1aa
+        url: https://github.com/Open-VCS/OpenVCS-Plugin-Themes.git
+        tag: openvcs-official-themes-nightly
+        commit: 7704db42ed3729557f6b8fe5f1a967ea19e526b4
         dest: .
     build-commands:
       - mkdir -p /app/share/openvcs/plugins/openvcs.official-themes
-      - cp -a OfficialThemes/themes/. /app/share/openvcs/plugins/openvcs.official-themes/themes/
-      - cp OfficialThemes/package.json /app/share/openvcs/plugins/openvcs.official-themes/
-      - cp OfficialThemes/README.md /app/share/openvcs/plugins/openvcs.official-themes/ 2>/dev/null || true
-      - cp OfficialThemes/LICENSE /app/share/openvcs/plugins/openvcs.official-themes/ 2>/dev/null || true
-      - cp OfficialThemes/icon.png /app/share/openvcs/plugins/openvcs.official-themes/ 2>/dev/null || true
+      - cp -a themes/. /app/share/openvcs/plugins/openvcs.official-themes/themes/
+      - cp package.json /app/share/openvcs/plugins/openvcs.official-themes/
+      - cp README.md /app/share/openvcs/plugins/openvcs.official-themes/ 2>/dev/null || true
+      - cp LICENSE /app/share/openvcs/plugins/openvcs.official-themes/ 2>/dev/null || true
+      - cp icon.png /app/share/openvcs/plugins/openvcs.official-themes/ 2>/dev/null || true
 
   - name: openvcs-backend
     buildsystem: simple
@@ -112,8 +112,11 @@ modules:
         replace-with = "vendored-sources"
 
         [source.vendored-sources]
-        directory = "../cargo/vendor"
+        directory = "cargo/vendor"
         CARGOEOF
+      # Tauri build-time macro needs frontend dist present in repo layout.
+      - mkdir -p Frontend/dist
+      - cp -a /app/share/openvcs/frontend/. Frontend/dist/
       # Build Rust backend offline
       - cargo build --release --offline --features tauri/custom-protocol --manifest-path Backend/Cargo.toml
       # Install binary
