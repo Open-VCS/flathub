@@ -66,7 +66,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/Open-VCS/OpenVCS-Plugin-Themes.git
-        tag: openvcs-official-themes-nightly
+        tag: openvcs-official-themes-v0.1.0
         commit: 7704db42ed3729557f6b8fe5f1a967ea19e526b4
         dest: .
     build-commands:

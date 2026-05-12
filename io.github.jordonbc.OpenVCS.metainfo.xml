@@ -2,16 +2,16 @@
 <component type="desktop-application">
   <id>io.github.jordonbc.OpenVCS</id>
   <name>OpenVCS</name>
-  <summary>A simple, cross-platform GUI for Git.</summary>
+  <summary>A plugin-based desktop version control client.</summary>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
   <developer id="io.github.jordonbc">
     <name>Jordon Brooks</name>
   </developer>
-  <url type="homepage">https://bbgames.dev</url>
-  <url type="bugtracker">https://github.com/Jordonbc/OpenVCS/issues</url>
+  <url type="homepage">https://openvcs.app</url>
+  <url type="bugtracker">https://github.com/Open-VCS/OpenVCS/issues</url>
   <description>
-    <p>OpenVCS is a lightweight, highly customizable Git GUI built with Rust and Tauri.</p>
+    <p>OpenVCS is a plugin-based desktop version control client. Built with Rust and Tauri for a native experience, it provides a clean interface for Git today while laying the groundwork for broader VCS support through its plugin architecture.</p>
   </description>
   <launchable type="desktop-id">io.github.jordonbc.OpenVCS.desktop</launchable>
   <provides>
