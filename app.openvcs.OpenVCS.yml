@@ -5,9 +5,7 @@ sdk: org.gnome.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.rust-stable
   - org.freedesktop.Sdk.Extension.node24
-
 command: openvcs
-
 finish-args:
   - --share=ipc
   - --share=network
@@ -19,7 +17,6 @@ finish-args:
   - --talk-name=org.freedesktop.portal.Desktop
   - --talk-name=org.freedesktop.portal.FileChooser
   - --talk-name=org.freedesktop.portal.OpenURI
-
 modules:
   - name: openvcs-frontend
     buildsystem: simple
@@ -28,8 +25,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/Open-VCS/OpenVCS.git
-        tag: openvcs-v0.4.0
-        commit: 0c6585892826c80aeaf816e2f2ae5b95d541a1aa
+        tag: openvcs-v0.4.1
+        commit: f1ed3d27610ea14b73da970833479402f3db6866
         dest: .
       - npm-sources-frontend.json
     build-commands:
@@ -37,7 +34,6 @@ modules:
       - cd Frontend && npm_config_cache=../flatpak-node/npm-cache npm run build
       - mkdir -p /app/share/openvcs/frontend
       - cp -a Frontend/dist/. /app/share/openvcs/frontend/
-
   - name: openvcs-git-plugin
     buildsystem: simple
     build-options:
@@ -58,14 +54,7 @@ modules:
       # Bundle runtime dependencies, stripping .bin symlinks (plugin sync rejects symlinks)
       - cp -a node_modules /app/share/openvcs/plugins/openvcs.git/node_modules
       - find /app/share/openvcs/plugins/openvcs.git/node_modules -type d -name ".bin" -exec rm -rf {} + 2>/dev/null || true
-      - for f in src tsconfig.json README.md ARCHITECTURE.md icon.png LICENSE; do
-          file="$f";
-          if [ -e "$file" ]; then
-            mkdir -p /app/share/openvcs/plugins/openvcs.git/"$(dirname "$f")";
-            cp -a "$file" /app/share/openvcs/plugins/openvcs.git/"$f";
-          fi;
-        done
-
+      - for f in src tsconfig.json README.md ARCHITECTURE.md icon.png LICENSE; do file="$f"; if [ -e "$file" ]; then mkdir -p /app/share/openvcs/plugins/openvcs.git/"$(dirname "$f")"; cp -a "$file" /app/share/openvcs/plugins/openvcs.git/"$f"; fi; done
   - name: openvcs-official-themes
     buildsystem: simple
     sources:
@@ -81,18 +70,18 @@ modules:
       - cp README.md /app/share/openvcs/plugins/openvcs.official-themes/ 2>/dev/null || true
       - cp LICENSE /app/share/openvcs/plugins/openvcs.official-themes/ 2>/dev/null || true
       - cp icon.png /app/share/openvcs/plugins/openvcs.official-themes/ 2>/dev/null || true
-
   - name: openvcs-backend
     buildsystem: simple
     build-options:
       append-path: /usr/lib/sdk/rust-stable/bin
       env:
         OPENVCS_FLATPAK: "1"
+        OPENVCS_OFFICIAL_RELEASE: "1"
     sources:
       - type: git
         url: https://github.com/Open-VCS/OpenVCS.git
-        tag: openvcs-v0.4.0
-        commit: 0c6585892826c80aeaf816e2f2ae5b95d541a1aa
+        tag: openvcs-v0.4.1
+        commit: f1ed3d27610ea14b73da970833479402f3db6866
         dest: .
       - cargo-sources.json
       - type: file

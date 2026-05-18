@@ -36,6 +36,11 @@
     <binary>openvcs</binary>
   </provides>
   <releases>
+    <release version="0.4.1" date="2026-05-18">
+      <description>
+        <p>Release 0.4.1</p>
+      </description>
+    </release>
     <release version="0.4.0" date="2026-05-12">
       <description>
         <p>Initial Flatpak release.</p>
