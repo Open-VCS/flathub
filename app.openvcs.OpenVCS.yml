@@ -25,8 +25,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/Open-VCS/OpenVCS.git
-        tag: openvcs-v0.4.1
-        commit: f1ed3d27610ea14b73da970833479402f3db6866
+        tag: openvcs-v0.4.3
+        commit: 520d1ac20e3042e1bf2f21c6d9df7e0c380e5e26
         dest: .
       - npm-sources-frontend.json
     build-commands:
@@ -80,8 +80,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/Open-VCS/OpenVCS.git
-        tag: openvcs-v0.4.1
-        commit: f1ed3d27610ea14b73da970833479402f3db6866
+        tag: openvcs-v0.4.3
+        commit: 520d1ac20e3042e1bf2f21c6d9df7e0c380e5e26
         dest: .
       - cargo-sources.json
       - type: file
